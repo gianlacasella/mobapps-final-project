@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/deck_item"
+        android:enabled="true"
+        android:icon="@drawable/cards_icon"
+        android:title="Deck"/>
+    <item
+        android:id="@+id/rooms_item"
+        android:enabled="true"
+        android:icon="@drawable/world_icon"
+        android:title="Rooms"/>
+    <item
+        android:id="@+id/settings_item"
+        android:enabled="true"
+        android:icon="@drawable/settings_icon"
+        android:title="Settings"/>
+</menu>

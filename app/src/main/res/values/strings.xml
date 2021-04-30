@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Planning Poker</string>
+    <string name="sign_in_text"><u>Sign In</u></string>
+    <string name="log_in_text">Login</string>
+</resources>
