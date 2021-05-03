@@ -4,47 +4,78 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".fragments.RoomsHomeFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_margin="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <Button
-            android:id="@+id/RoomsHome_CreateButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Create room"
-            android:textAllCaps="false"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
 
-        <Button
-            android:id="@+id/RoomsHome_JoinButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="40dp"
-            android:text="Join room"
-            android:textAllCaps="false"
-            app:layout_constraintBottom_toBottomOf="@+id/RoomsHome_CreateButton"
-            app:layout_constraintStart_toEndOf="@+id/RoomsHome_CreateButton"
-            app:layout_constraintTop_toTopOf="@+id/RoomsHome_CreateButton" />
+            <Button
+                android:layout_weight="1"
+                android:id="@+id/roomsHome_CreateButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/secondary_button"
+                android:layout_marginRight="5dp"
+                android:padding="5dp"
+                android:text="@string/create_room_button"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                app:backgroundTint="@null"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/roomsHome_JoinButton"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:layout_weight="1"
+                android:id="@+id/roomsHome_JoinButton"
+                android:layout_width="match_parent"
+                android:layout_marginLeft="5dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/secondary_button"
+                android:padding="5dp"
+                android:text="@string/join_room_button_text"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                app:backgroundTint="@null"
+                app:layout_constraintBottom_toBottomOf="@+id/roomsHome_CreateButton"
+                app:layout_constraintStart_toEndOf="@+id/roomsHome_CreateButton"
+                app:layout_constraintTop_toTopOf="@+id/roomsHome_CreateButton" />
+        </LinearLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/RoomsHome_recycler"
+        android:id="@+id/roomsHome_recycler"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
         android:layout_marginBottom="8dp"
+        android:orientation="vertical"
+        android:scrollbars="vertical"
         app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:listitem="@layout/item_poker_room" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

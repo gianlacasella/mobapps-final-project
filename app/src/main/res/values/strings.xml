@@ -1,5 +1,26 @@
 <resources>
+    <!-- App name-->
     <string name="app_name">Planning Poker</string>
+
+    <!-- Login activity -->
     <string name="sign_in_text"><u>Sign In</u></string>
     <string name="log_in_text">Login</string>
+    <string name="email_hint">Email</string>
+    <string name="email_icon_description">Email</string>
+    <string name="password_hint">Password</string>
+    <string name="password_icon_description">Password</string>
+    <string name="login_button_text">Login</string>
+    <string name="forgot_password_text">forgot password?</string>
+
+    <!-- Planning activity -->
+    <string name="single_card_placeholder">[card.value]</string>
+    <string name="room_name_hint">Room name</string>
+    <string name="create_room_button">Create room</string>
+    <string name="poker_room_placeholder">[pokerRoom.name]</string>
+    <string name="users_count_placeholder">[usersCountInRoom]</string>
+    <string name="delete_room_button_text">Delete room</string>
+    <string name="user_icon_description">User icon</string>
+    <string name="join_room_button_text">Join room</string>
+    <string name="settings_deck_label_text">Deck</string>
+    <string name="card_item_placeholder">1</string>
 </resources>

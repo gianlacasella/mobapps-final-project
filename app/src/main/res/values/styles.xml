@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Using this for Dialogs because, otherwise, the default button style is the standard UnelevatedButton, whose zero spacing behaves bad on yes/no Dialogs. -->
+    <style name="myDialogTheme" parent="ThemeOverlay.MaterialComponents.Dialog.Alert">
+        <item name="android:buttonBarButtonStyle">@style/Widget.MaterialComponents.Button.TextButton.Dialog</item>
+    </style>
+
+</resources>

@@ -5,4 +5,3 @@ Proyecto Aplicaciones Móbiles 2021, grupo 7
 Ignacio F. Garcés – Gianfranco Lacasella
 
 Universidad de los Andes.
-# mobapps-final-project

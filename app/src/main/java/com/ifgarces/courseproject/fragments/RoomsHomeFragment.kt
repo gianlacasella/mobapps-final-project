@@ -1,15 +1,16 @@
 package com.ifgarces.courseproject.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentTransaction
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.ifgarces.courseproject.PlanningActivity
 import com.ifgarces.courseproject.R
+import com.ifgarces.courseproject.utils.Logf
 
 
 /**
@@ -17,41 +18,26 @@ import com.ifgarces.courseproject.R
  */
 class RoomsHomeFragment : Fragment() {
 
-    companion object {
-        /**
-         * This encapsulates the call of this fragment, so we do not deal with transactions and it's
-         * more simple.
-         * @param caller From the caller's activity.
-         * @param widget_id Placeholder for this fragment's view.
-         */
-        public fun summon(caller :FragmentActivity, widget_id :Int) {
-            val transactioner :FragmentTransaction = caller.supportFragmentManager.beginTransaction()
-                .replace(widget_id, newInstance())
-            transactioner.commit()
+    private class FragmentUI(owner :View) {
+        val onlineRoomsRecycler :RecyclerView = owner.findViewById(R.id.roomsHome_recycler)
+        val createButton        :Button = owner.findViewById(R.id.roomsHome_CreateButton)
+        val joinButton          :Button = owner.findViewById(R.id.roomsHome_JoinButton)
+    }; private lateinit var UI :FragmentUI
+
+    override fun onCreateView(
+        inflater :LayoutInflater, container :ViewGroup?, savedInstanceState :Bundle?
+    ) : View? {
+        val fragView :View? = inflater.inflate(R.layout.fragment_rooms_home, container, false)
+        this.UI = FragmentUI(owner=fragView!!)
+        this.UI.onlineRoomsRecycler.layoutManager = LinearLayoutManager(this.requireContext())
+        this.UI.onlineRoomsRecycler.adapter = (this.requireActivity() as PlanningActivity).roomsRecyclerAdapter
+        this.UI.createButton.setOnClickListener {
+            (this.requireActivity() as PlanningActivity).navigator.nativateToRoomCreateFragment()
         }
-        private fun newInstance() = RoomsHomeFragment()
-    }
-
-    private class _WidgetHandler(owner :View) {
-        val onlineRoomsRecycler :RecyclerView = owner.findViewById(R.id.RoomsHome_recycler)
-        val createButton        :Button = owner.findViewById(R.id.RoomsHome_CreateButton)
-        val joinButton          :Button = owner.findViewById(R.id.RoomsHome_JoinButton)
-    }; private lateinit var ui : _WidgetHandler
-
-//    override fun onCreate(savedInstanceState :Bundle?) {
-//        super.onCreate(savedInstanceState)
-//    }
-
-    override fun onCreateView(inflater :LayoutInflater, container :ViewGroup?, savedInstanceState :Bundle?) : View? {
-        val view :View? = inflater.inflate(R.layout.fragment_rooms_home, container, false)
-        this.ui = _WidgetHandler(owner=view!!)
-        // this.ui.onlineRoomsRecycler.adapter = ...
-        this.ui.createButton.setOnClickListener {
-
+        this.UI.joinButton.setOnClickListener {
+            /* nothing here by the moment */
         }
-        this.ui.joinButton.setOnClickListener {
-
-        }
-        return view
+        Logf("[RoomsHomeFragment] I was initialized.")
+        return fragView
     }
 }

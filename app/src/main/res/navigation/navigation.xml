@@ -4,18 +4,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
     app:startDestination="@id/deckFragment">
+
     <fragment
         android:id="@+id/deckFragment"
         android:name="com.ifgarces.courseproject.fragments.DeckFragment"
         android:label="fragment_deck"
-        tools:layout="@layout/fragment_deck" >
+        tools:layout="@layout/fragment_card_deck" >
         <action
-            android:id="@+id/action_deckFragment_to_roomsHomeFragment"
+            android:id="@+id/action_to_roomsHomeFragment"
             app:destination="@id/roomsHomeFragment" />
         <action
-            android:id="@+id/action_deckFragment_to_settingsFragment"
+            android:id="@+id/action_to_settingsFragment"
             app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_to_singleCardFragment"
+            app:destination="@id/singleCardFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/singleCardFragment"
+        android:name="com.ifgarces.courseproject.fragments.SingleCardFragment"
+        android:label="SingleCardFragment">
+    </fragment>
+
     <fragment
         android:id="@+id/roomsHomeFragment"
         android:name="com.ifgarces.courseproject.fragments.RoomsHomeFragment"
@@ -26,7 +37,32 @@
         <action
             android:id="@+id/action_roomsHomeFragment_to_deckFragment"
             app:destination="@id/deckFragment" />
+        <action
+            android:id="@+id/action_roomsHomeFragment_to_roomCreateFragment"
+            app:destination="@+id/roomCreateFragment" />
+        <action
+            android:id="@+id/action_roomsHomeFragment_to_roomDetailsFragment"
+            app:destination="@id/roomDetailsFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/roomCreateFragment"
+        android:name="com.ifgarces.courseproject.fragments.RoomCreateFragment"
+        android:label="RoomsCreateFragment">
+        <action
+            android:id="@+id/action_roomCreateFragment_to_roomsHomeFragment"
+            app:destination="@id/roomsHomeFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/roomDetailsFragment"
+        android:name="com.ifgarces.courseproject.fragments.RoomDetailsFragment"
+        android:label="RoomDetailsFragment">
+        <action
+            android:id="@+id/action_roomDetailsFragment_to_roomsHomeFragment"
+            app:destination="@id/roomsHomeFragment" />
+    </fragment>
+
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.ifgarces.courseproject.fragments.SettingsFragment"

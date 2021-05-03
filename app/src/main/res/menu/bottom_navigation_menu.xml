@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/deck_item"
         android:enabled="true"
         android:icon="@drawable/cards_icon"
-        android:title="Deck"/>
+        android:title="Deck"
+        android:iconTint="@color/white" />
     <item
         android:id="@+id/rooms_item"
         android:enabled="true"
+        android:title=""
         android:icon="@drawable/world_icon"
-        android:title="Rooms"/>
+        android:iconTint="@color/white"/>
     <item
         android:id="@+id/settings_item"
         android:enabled="true"
+        android:title=""
         android:icon="@drawable/settings_icon"
-        android:title="Settings"/>
+        android:iconTint="@color/white" />
 </menu>
