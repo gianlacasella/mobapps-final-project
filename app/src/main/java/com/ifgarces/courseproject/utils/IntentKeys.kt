@@ -1,5 +1,6 @@
 package com.ifgarces.courseproject.utils
 
+
 /**
  * Container for the Intent keys, for inter-fragment communicaton.
  */

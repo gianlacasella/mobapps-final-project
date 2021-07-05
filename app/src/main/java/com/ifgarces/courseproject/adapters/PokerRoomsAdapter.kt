@@ -13,7 +13,8 @@ import com.ifgarces.courseproject.utils.IntentKeys
 import com.ifgarces.courseproject.utils.Logf
 
 
-class PokerRoomsAdapter(private var data :MutableList<PokerRoom>) : RecyclerView.Adapter<PokerRoomsAdapter.PokerRoomViewHolder>() {
+class PokerRoomsAdapter(private var data :MutableList<PokerRoom>) :
+    RecyclerView.Adapter<PokerRoomsAdapter.PokerRoomViewHolder>() {
 
     override fun onCreateViewHolder(parent :ViewGroup, viewType :Int) : PokerRoomViewHolder {
         return PokerRoomViewHolder(
@@ -42,6 +43,8 @@ class PokerRoomsAdapter(private var data :MutableList<PokerRoom>) : RecyclerView
         this.notifyItemRemoved(index)
     }
 
+    public fun getItemAt(index :Int) = this.data[index]
+
     inner class PokerRoomViewHolder(v :View) : RecyclerView.ViewHolder(v) {
         private val parentView     :View = v
         private val pokerRoom_name :TextView = v.findViewById(R.id.itemRoom_name)
@@ -53,7 +56,8 @@ class PokerRoomsAdapter(private var data :MutableList<PokerRoom>) : RecyclerView
                 helper.intent.putExtra(IntentKeys.POKER_ROOM_NAME, item.name)
                 helper.intent.putExtra(IntentKeys.POKER_ROOM_RECYCLER_INDEX, position)
 
-                (this.parentView.context as PlanningActivity).navigator.nativateToRoomDetailsFragment()
+                (this.parentView.context as PlanningActivity).navigator
+                    .nativateToRoomDetailsFragment()
             }
         }
     }

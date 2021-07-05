@@ -9,9 +9,10 @@ import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import androidx.fragment.app.Fragment
+import com.ifgarces.courseproject.PlanningActivity
 import com.ifgarces.courseproject.R
-import com.ifgarces.courseproject.enums.DeckType
-import com.ifgarces.courseproject.models.DataMaster
+import com.ifgarces.courseproject.models.Deck
+import com.ifgarces.courseproject.utils.Logf
 
 
 class SettingsFragment : Fragment() {
@@ -21,39 +22,39 @@ class SettingsFragment : Fragment() {
     }; private lateinit var UI :FragmentUI
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+        inflater :LayoutInflater, container :ViewGroup?, savedInstanceState :Bundle?
+    ) :View? {
         val fragView :View? = inflater.inflate(R.layout.fragment_settings, container, false)
-        this.UI = FragmentUI(owner=fragView!!)
+        this.UI = FragmentUI(owner = fragView!!)
 
-        val deckMapping :Map<String, DeckType> = mapOf(
-            DeckType.Standard.toString()  to DeckType.Standard,
-            DeckType.Hours.toString()     to DeckType.Hours,
-            DeckType.Fibonacci.toString() to DeckType.Fibonacci,
-            DeckType.T_Shirt.toString()   to DeckType.T_Shirt
-        )
+        (this.requireActivity() as PlanningActivity).let { activity :PlanningActivity ->
+            val deckNames :List<String> = activity.deckCardsViewModel.allDecks.map { it.name }
 
-        val orderedKeys :List<String> = deckMapping.keys.toList().sorted() // ordering, otherwise order is not guaranteed because it's a map, so we later can always know the DeckType from the index
-        this.UI.deckTypeSelector.adapter = ArrayAdapter(
-            this.requireContext(), R.layout.spinner_item, orderedKeys
-        )
+            UI.deckTypeSelector.adapter = ArrayAdapter(
+                this.requireContext(), R.layout.spinner_item, deckNames
+            )
 
-        this.UI.deckTypeSelector.setSelection(
-            orderedKeys.indexOf(DataMaster.getUserCardDeck().type.toString())
-        )
+            UI.deckTypeSelector.setSelection(
+                deckNames.indexOf(
+                    activity.deckCardsViewModel.currentDeck.name
+                )
+            )
 
-        this.UI.deckTypeSelector.onItemSelectedListener = object : OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>, view: View, position: Int, id: Long
-            ) {
-                val selectedItem :String = parent.getItemAtPosition(position).toString()
-                val selectedDeckType :DeckType = deckMapping[selectedItem]!!
-                DataMaster.setDeckType(selectedDeckType)
+            UI.deckTypeSelector.onItemSelectedListener = object : OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent :AdapterView<*>, view :View, position :Int, id :Long
+                ) {
+                    val selectedItem :String = parent.getItemAtPosition(position).toString()
+                    Logf("[SettingsFragment] Changing user Deck type from %s to %s", activity.deckCardsViewModel.currentDeck.name, selectedItem)
+                    activity.deckCardsViewModel
+                        .setUserDeck(
+                            deck = activity.deckCardsViewModel.allDecks.find { deck :Deck -> deck.name == selectedItem }!!
+                        )
+                }
+
+                override fun onNothingSelected(parent :AdapterView<*>?) {}
             }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
+            return fragView
         }
-        return fragView
     }
 }

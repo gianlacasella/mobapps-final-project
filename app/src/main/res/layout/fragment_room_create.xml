@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="40dp"
-    tools:context=".fragments.RoomCreateFragment">
+    tools:context=".fragments.RoomCreateFragment"
+    tools:ignore="MissingClass">
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textInputLayout"
@@ -72,14 +73,23 @@
             android:textColorHint="@color/almostBlack" />
     </com.google.android.material.textfield.TextInputLayout>
 
+    <Spinner
+        android:id="@+id/createroom_deckTypeSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/roomsCreate_commitButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textView2"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout2" />
+
 
     <Button
         android:id="@+id/roomsCreate_commitButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
         android:layout_marginTop="25dp"
+        android:layout_marginRight="30dp"
         android:background="@drawable/secondary_button"
         android:padding="2dp"
         android:text="@string/create_room_button"
@@ -87,6 +97,7 @@
         android:textColor="@color/white"
         android:textSize="15sp"
         app:backgroundTint="@null"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout2" />

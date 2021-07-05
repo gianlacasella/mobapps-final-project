@@ -8,9 +8,9 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.ifgarces.courseproject.PlanningActivity
 import com.ifgarces.courseproject.R
-import com.ifgarces.courseproject.adapters.DeckAdapter
-import com.ifgarces.courseproject.models.DataMaster
+import com.ifgarces.courseproject.adapters.CardsAdapter
 
 
 class DeckFragment : Fragment() {
@@ -20,37 +20,21 @@ class DeckFragment : Fragment() {
     }; private lateinit var UI :FragmentUI
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View? {
+        inflater :LayoutInflater, container :ViewGroup?, savedInstanceState :Bundle?
+    ) :View? {
         val fragView :View? = inflater.inflate(R.layout.fragment_card_deck, container, false)
-        this.UI = FragmentUI(owner=fragView!!)
+        this.UI = FragmentUI(owner = fragView!!)
 
-        val layoutManager = GridLayoutManager(context, 6)
-        val adapter = DeckAdapter(
-                this.requireActivity().applicationContext, DataMaster.getUserCardDeck()
+        this.UI.deckRecycler.layoutManager = GridLayoutManager(
+            this.requireActivity().applicationContext,
+            3,
+            LinearLayoutManager.VERTICAL,
+            false
         )
-
-        layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-            override fun getSpanSize(position: Int): Int {
-                val item = adapter.itemCount
-                val extra: Int
-                extra = item % 3
-                if (extra == 0) {
-                    return 2
-                }
-                if (item - (position + 1) < extra) {
-                    return (6  / extra) as Int
-
-                } else {
-                    return 2
-                }
-            }
-        }
-
-        this.UI.deckRecycler.layoutManager = layoutManager
-
         this.UI.deckRecycler.setHasFixedSize(true)
-        this.UI.deckRecycler.adapter = adapter
+        this.UI.deckRecycler.adapter = CardsAdapter(
+            data = (this.requireActivity() as PlanningActivity).deckCardsViewModel.currentDeckCards
+        )
 
         return fragView
     }

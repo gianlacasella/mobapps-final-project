@@ -9,7 +9,7 @@
         android:id="@+id/deckFragment"
         android:name="com.ifgarces.courseproject.fragments.DeckFragment"
         android:label="fragment_deck"
-        tools:layout="@layout/fragment_card_deck" >
+        tools:layout="@layout/fragment_card_deck">
         <action
             android:id="@+id/action_to_roomsHomeFragment"
             app:destination="@id/roomsHomeFragment" />
@@ -24,13 +24,15 @@
     <fragment
         android:id="@+id/singleCardFragment"
         android:name="com.ifgarces.courseproject.fragments.SingleCardFragment"
-        android:label="SingleCardFragment">
+        android:label="SingleCardFragment"
+        tools:layout="@layout/fragment_card_single">
     </fragment>
 
     <fragment
         android:id="@+id/roomsHomeFragment"
         android:name="com.ifgarces.courseproject.fragments.RoomsHomeFragment"
-        android:label="RoomsHomeFragment" >
+        android:label="RoomsHomeFragment"
+        tools:layout="@layout/fragment_rooms_home">
         <action
             android:id="@+id/action_roomsHomeFragment_to_settingsFragment"
             app:destination="@id/settingsFragment" />
@@ -48,7 +50,8 @@
     <fragment
         android:id="@+id/roomCreateFragment"
         android:name="com.ifgarces.courseproject.fragments.RoomCreateFragment"
-        android:label="RoomsCreateFragment">
+        android:label="RoomsCreateFragment"
+        tools:layout="@layout/fragment_room_create">
         <action
             android:id="@+id/action_roomCreateFragment_to_roomsHomeFragment"
             app:destination="@id/roomsHomeFragment" />
@@ -57,7 +60,8 @@
     <fragment
         android:id="@+id/roomDetailsFragment"
         android:name="com.ifgarces.courseproject.fragments.RoomDetailsFragment"
-        android:label="RoomDetailsFragment">
+        android:label="RoomDetailsFragment"
+        tools:layout="@layout/fragment_room_details">
         <action
             android:id="@+id/action_roomDetailsFragment_to_roomsHomeFragment"
             app:destination="@id/roomsHomeFragment" />
@@ -67,12 +71,21 @@
         android:id="@+id/settingsFragment"
         android:name="com.ifgarces.courseproject.fragments.SettingsFragment"
         android:label="fragment_settings"
-        tools:layout="@layout/fragment_settings" >
+        tools:layout="@layout/fragment_settings">
         <action
             android:id="@+id/action_settingsFragment_to_roomsHomeFragment"
             app:destination="@id/roomsHomeFragment" />
         <action
             android:id="@+id/action_settingsFragment_to_deckFragment"
             app:destination="@id/deckFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/roomJoinFragment"
+        android:name="com.ifgarces.courseproject.fragments.JoinRoomFragment"
+        android:label="JoinRoomFragment">
+        <action
+            android:id="@+id/action_roomJoinFragment_to_roomsHomeFragment"
+            app:destination="@id/roomsHomeFragment" />
     </fragment>
 </navigation>

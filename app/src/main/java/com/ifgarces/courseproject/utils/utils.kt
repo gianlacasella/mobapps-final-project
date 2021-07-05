@@ -29,16 +29,16 @@ fun Context.toastf(format :String, vararg args :Any?) {
  * `AlertDialog` with yes/no buttons.
  * @param title Dialog title.
  * @param message Dialog body.
- * @param onYesClicked Action to be performed when the user presses the possitive button.
- * @param onNoClicked Action to be performed when the user presses the negative button.
+ * @param onYesClicked Callback executed when the user presses the possitive button.
+ * @param onNoClicked Callback executed when the user presses the negative button.
  * @param icon Dialog icon, placed to the left of the title. Must be a drawable resource ID.
  */
 fun Context.yesNoDialog(
-    title         :String, // note: if `title` is "", somehow the icon is not shown. Should use " " or similar insted.
-    message       :String,
-    onYesClicked  :() -> Unit,
-    onNoClicked   :() -> Unit = {},
-    icon          :Int? = null // resource reference
+    title        :String, // note: if `title` is "", somehow the icon is not shown. Should use " " or similar insted.
+    message      :String,
+    onYesClicked :() -> Unit,
+    onNoClicked  :() -> Unit = {},
+    icon         :Int? = null // resource reference
 ) {
     val diag :AlertDialog.Builder = AlertDialog.Builder(this, R.style.myDialogTheme)
     //val diag :AlertDialog.Builder = AlertDialog.Builder(this)
@@ -51,6 +51,33 @@ fun Context.yesNoDialog(
         }
         .setNegativeButton("No") { dialog :DialogInterface, _ :Int ->
             onNoClicked.invoke()
+            dialog.dismiss()
+        }
+    if (icon != null) {
+        diag.setIcon(icon)
+    }
+    diag.create().show()
+}
+
+/**
+ * Simple `AlertDialog` that shows text information.
+ * @param title Dialog title.
+ * @param message Dialog body.
+ * @param onDismiss Callback executed when the dialog is dismissed by the user.
+ * @param icon Dialog icon, placed to the left of the title. Must be a drawable resource ID.
+ */
+fun Context.infoDialog(
+    title     :String, // note: if `title` is "", somehow the icon is not shown. Should use " " or similar insted.
+    message   :String?,
+    onDismiss :() -> Unit = {},
+    icon      :Int? = null // resource reference
+) {
+    val diag :AlertDialog.Builder = AlertDialog.Builder(this, R.style.myDialogTheme)
+        .setTitle(title)
+        .setMessage(message.toString())
+        .setCancelable(false)
+        .setPositiveButton(android.R.string.ok) { dialog :DialogInterface, _ :Int ->
+            onDismiss.invoke()
             dialog.dismiss()
         }
     if (icon != null) {

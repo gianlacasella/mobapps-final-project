@@ -30,4 +30,8 @@ class Navigator(private val activity: PlanningActivity?){
     fun navigateToSingleCardFragment() {
         this.activity?.findNavController(R.id.fragmentContainer)?.navigate(R.id.singleCardFragment)
     }
+
+    fun navigateToJoinRoomFragment(){
+        this.activity?.findNavController(R.id.fragmentContainer)?.navigate(R.id.roomJoinFragment)
+    }
 }

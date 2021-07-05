@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ifgarces.courseproject.PlanningActivity
 import com.ifgarces.courseproject.R
-import com.ifgarces.courseproject.utils.Logf
 
 
 /**
@@ -26,18 +25,21 @@ class RoomsHomeFragment : Fragment() {
 
     override fun onCreateView(
         inflater :LayoutInflater, container :ViewGroup?, savedInstanceState :Bundle?
-    ) : View? {
+    ) :View? {
         val fragView :View? = inflater.inflate(R.layout.fragment_rooms_home, container, false)
         this.UI = FragmentUI(owner=fragView!!)
-        this.UI.onlineRoomsRecycler.layoutManager = LinearLayoutManager(this.requireContext())
-        this.UI.onlineRoomsRecycler.adapter = (this.requireActivity() as PlanningActivity).roomsRecyclerAdapter
-        this.UI.createButton.setOnClickListener {
-            (this.requireActivity() as PlanningActivity).navigator.nativateToRoomCreateFragment()
+
+        with (this.requireActivity() as PlanningActivity) {
+            UI.onlineRoomsRecycler.layoutManager = LinearLayoutManager(this@RoomsHomeFragment.requireContext())
+            UI.onlineRoomsRecycler.adapter = this.roomsRecyclerAdapter
+            UI.createButton.setOnClickListener {
+                this.navigator.nativateToRoomCreateFragment()
+            }
+            UI.joinButton.setOnClickListener {
+                this.navigator.navigateToJoinRoomFragment()
+            }
         }
-        this.UI.joinButton.setOnClickListener {
-            /* nothing here by the moment */
-        }
-        Logf("[RoomsHomeFragment] I was initialized.")
+
         return fragView
     }
 }

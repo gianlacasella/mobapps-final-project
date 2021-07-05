@@ -1,11 +1,20 @@
 package com.ifgarces.courseproject.models
 
-import com.ifgarces.courseproject.enums.DeckType
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
-
+/**
+ * Represents a card deck. A Deck has many Cards.
+ * @property id The unique identifier for the Deck.
+ * @property name The name (formerly `deckType`), which indicates the cards belonging to this Deck.
+ */
+@Entity(tableName=Deck.TABLE_NAME)
 data class Deck(
-    public val type  :DeckType,
-    public val cards :MutableList<Card>
+    @PrimaryKey(autoGenerate=false)
+    val id :Int,
+    val name :String
 ) {
-    public fun getCardsCount() :Int = cards.size
+    companion object {
+        const val TABLE_NAME :String = "deck"
+    }
 }
