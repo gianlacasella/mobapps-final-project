@@ -2,12 +2,12 @@ package com.ifgarces.courseproject.networking
 
 import retrofit2.Call
 import retrofit2.http.Body
-import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.HTTP
 import retrofit2.http.Header
 import retrofit2.http.Headers
 import retrofit2.http.POST
+import retrofit2.http.Path
 import retrofit2.http.Url
 
 
@@ -48,8 +48,7 @@ interface PokerApiCalls {
     ) :Call<PokerRoomsApiClasses.JoinRoomResponse>
 
     @Headers("Content-Type:application/json")
-    @HTTP(method = "DELETE", path = "/room", hasBody = true)
-    //@DELETE("room")
+    @HTTP(method="DELETE", path="/room", hasBody=true)
     public fun deleteRoom(
         @Header("token") token :String,
         @Body deleteRoomRequest :PokerRoomsApiClasses.DeleteRoomRequest
@@ -62,17 +61,17 @@ interface PokerApiCalls {
     ) :Call<PokerRoomsApiClasses.GetAllRoomsResponse>
 
     @Headers("Content-Type:application/json")
-    @GET("rooms")
+    @GET("rooms/{mRoomName}")
     public fun getRoom(
         @Header("token") token :String,
-        @Url roomName :String //TODO: setup properly in GET request path, not body
+        @Path(value="mRoomName") roomName :String
     ) :Call<PokerRoomsApiClasses.GetRoomResponse>
 
     @Headers("Content-Type:application/json")
-    @GET("getResult")
+    @GET("getResult/{mRoomName}")
     public fun getVotingResult(
         @Header("token") token :String,
-        @Url roomName :String //TODO: setup properly in GET request path, not body
+        @Path(value="mRoomName") roomName :String
     ) :Call<PokerRoomsApiClasses.GetResultResponse>
 
     @Headers("Content-Type:application/json")
@@ -80,5 +79,13 @@ interface PokerApiCalls {
     public fun voteForCard(
         @Header("token") token :String,
         @Body voteRequest :PokerRoomsApiClasses.VoteRequest
+    ) :Call<PokerRoomsApiClasses.SimpleResponse>
+
+
+    @Headers("Content-Type:application/json")
+    @POST("reportLocation")
+    public fun reportLocation(
+        @Header("token") token :String,
+        @Body reportLocationRequest :PokerRoomsApiClasses.ReportLocationRequest
     ) :Call<PokerRoomsApiClasses.SimpleResponse>
 }

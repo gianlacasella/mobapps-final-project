@@ -25,7 +25,7 @@
         android:id="@+id/singleCardFragment"
         android:name="com.ifgarces.courseproject.fragments.SingleCardFragment"
         android:label="SingleCardFragment"
-        tools:layout="@layout/fragment_card_single">
+        tools:layout="@layout/fragment_single_card">
     </fragment>
 
     <fragment

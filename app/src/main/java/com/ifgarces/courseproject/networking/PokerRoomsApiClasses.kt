@@ -1,5 +1,7 @@
 package com.ifgarces.courseproject.networking
 
+import java.sql.Timestamp
+
 
 /**
  * Encapsulating classes that will be only used when communicating with the Poker API
@@ -36,7 +38,7 @@ object PokerRoomsApiClasses {
 
     // -------------- Delete a room -------------- //
     data class DeleteRoomRequest(
-        val name :String,
+        val roomName :String,
         val roomId :String
     )
 
@@ -45,11 +47,23 @@ object PokerRoomsApiClasses {
     )
 
     // -------------- Get a room -------------- //
+
+    data class RoomMemberLocation(
+        val lat         :String,
+        val long        :String,
+        val timestamp   :String
+    )
+
+    data class RoomMember(
+        val username :String,
+        val location :RoomMemberLocation
+    )
+
     data class GetRoomResponse(
-        val roomId :String,
+        val roomId   :String,
         val roomName :String,
-        val deck :Deck,
-        val members :List<String>
+        val deck     :Deck,
+        val members  :List<RoomMember>
     )
 
     // -------------- Get all rooms -------------- //
@@ -72,11 +86,19 @@ object PokerRoomsApiClasses {
     data class GetResultResponse(
         val roomId :String,
         val deck :Deck,
-        val results :List<GetResultResponseItem>
+        val result :List<GetResultResponseItem>
     )
 
     data class GetResultResponseItem(
         val name :String,
         val vote :String
+    )
+
+    // ------------- Report location request ---------//
+
+    data class ReportLocationRequest(
+        val lat     :String,
+        val long    :String,
+        val roomName:String
     )
 }

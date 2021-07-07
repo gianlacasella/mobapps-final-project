@@ -119,7 +119,7 @@ class MainActivity : AppCompatActivity() {
                 this.hideLoadingScreen()
                 this.infoDialog(
                     title = "Signup failed",
-                    message = serverMessage ?: "Please check your internet connection",
+                    message = serverMessage ?: "Please check your internet connection and ensure the user is not already registered",
                     icon = R.drawable.warning_icon,
                 )
             },
@@ -165,6 +165,7 @@ class MainActivity : AppCompatActivity() {
         Logf("[MainActivity] Authentication succeeded. userID=%s, userToken=%s", userID, userToken)
         this.toastf("Authenticated with user ID %s", userID)
         ApiUser.onSignIn(userID, userToken)
+        UI.signupCheckBox.isChecked = false // when the user registers, will see the log-in option when he returns to the authentication activity
         this.startActivity(
             Intent(this, PlanningActivity::class.java)
         )

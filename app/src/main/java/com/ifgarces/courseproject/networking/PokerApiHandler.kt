@@ -1,5 +1,6 @@
 package com.ifgarces.courseproject.networking
 
+import android.util.Log
 import com.ifgarces.courseproject.networking.PokerApiHandler.API_URL
 import com.ifgarces.courseproject.networking.PokerApiHandler.pokerApiCallsService
 import com.ifgarces.courseproject.networking.PokerApiHandler.retrofit
@@ -72,15 +73,18 @@ object PokerApiHandler {
                 ) {
                     if (response.isSuccessful) {
                         Logf("[PokerApiHandler] loginCall response successful with status code %d", response.code())
-                    }
-                    if (response.code() == 200) {
-                        val body :PokerAuthApiClasses.LoginResponse? = response.body()
-                        Logf("[PokerApiHandler] loginCall response body: %s", body)
-                        if (body == null) {
-                            Logf("[PokerApiHandler] loginCall response body is unexpectedly null")
-                            onFailure.invoke(null)
+                        if (response.code() == 200) {
+                            val body :PokerAuthApiClasses.LoginResponse? = response.body()
+                            Logf("[PokerApiHandler] loginCall response body: %s", body)
+                            if (body == null) {
+                                Logf("[PokerApiHandler] loginCall response body is unexpectedly null")
+                                onFailure.invoke(null)
+                            } else {
+                                onSuccess.invoke(body)
+                            }
                         } else {
-                            onSuccess.invoke(body)
+                            Logf("[PokerApiHandler] loginCall response was successful but with non-200 response code: %d", response.code())
+                            onFailure.invoke("Response code was %d".format(response.code()))
                         }
                     } else {
                         onFailure.invoke(null)
@@ -116,15 +120,18 @@ object PokerApiHandler {
                 ) {
                     if (response.isSuccessful) {
                         Logf("[PokerApiHandler] signupCall response successful with status code %d", response.code())
-                    }
-                    if (response.code() == 200) {
-                        val body :PokerAuthApiClasses.SignupResponse? = response.body()
-                        Logf("[PokerApiHandler] signupCall response body: %s", body)
-                        if (body == null) {
-                            Logf("[PokerApiHandler] signupCall response body is unexpectedly null")
-                            onFailure.invoke(null)
+                        if (response.code() == 200) {
+                            val body :PokerAuthApiClasses.SignupResponse? = response.body()
+                            Logf("[PokerApiHandler] signupCall response body: %s", body)
+                            if (body == null) {
+                                Logf("[PokerApiHandler] signupCall response body is unexpectedly null")
+                                onFailure.invoke(null)
+                            } else {
+                                onSuccess.invoke(body)
+                            }
                         } else {
-                            onSuccess.invoke(body)
+                            Logf("[PokerApiHandler] signupCall response was successful but with non-200 response code: %d", response.code())
+                            onFailure.invoke("Response code was %d".format(response.code()))
                         }
                     } else {
                         onFailure.invoke(null)
@@ -164,15 +171,18 @@ object PokerApiHandler {
                 ) {
                     if (response.isSuccessful) {
                         Logf("[PokerApiHandler] createRoomCall response successful with status code %d", response.code())
-                    }
-                    if (response.code() == 200) {
-                        val body :PokerRoomsApiClasses.CreateRoomResponse? = response.body()
-                        Logf("[PokerApiHandler] createRoomCall response body: %s", body)
-                        if (body == null) {
-                            Logf("[PokerApiHandler] createRoomCall response body is unexpectedly null")
-                            onFailure.invoke(null)
+                        if (response.code() == 200) {
+                            val body :PokerRoomsApiClasses.CreateRoomResponse? = response.body()
+                            Logf("[PokerApiHandler] createRoomCall response body: %s", body)
+                            if (body == null) {
+                                Logf("[PokerApiHandler] createRoomCall response body is unexpectedly null")
+                                onFailure.invoke(null)
+                            } else {
+                                onSuccess.invoke(body)
+                            }
                         } else {
-                            onSuccess.invoke(body)
+                            Logf("[PokerApiHandler] createRoomCall response was successful but with non-200 response code: %d", response.code())
+                            onFailure.invoke("Response code was %d".format(response.code()))
                         }
                     } else {
                         onFailure.invoke(null)
@@ -206,15 +216,18 @@ object PokerApiHandler {
                 ) {
                     if (response.isSuccessful) {
                         Logf("[PokerApiHandler] joinRoomCall response successful with status code %d", response.code())
-                    }
-                    if (response.code() == 200) {
-                        val body :PokerRoomsApiClasses.JoinRoomResponse? = response.body()
-                        Logf("[PokerApiHandler] joinRoomCall response body: %s", body)
-                        if (body == null) {
-                            Logf("[PokerApiHandler] joinRoomCall response body is unexpectedly null")
-                            onFailure.invoke(null)
+                        if (response.code() == 200) {
+                            val body :PokerRoomsApiClasses.JoinRoomResponse? = response.body()
+                            Logf("[PokerApiHandler] joinRoomCall response body: %s", body)
+                            if (body == null) {
+                                Logf("[PokerApiHandler] joinRoomCall response body is unexpectedly null")
+                                onFailure.invoke(null)
+                            } else {
+                                onSuccess.invoke(body)
+                            }
                         } else {
-                            onSuccess.invoke(body)
+                            Logf("[PokerApiHandler] joinRoomCall response was successful but with non-200 response code: %d", response.code())
+                            onFailure.invoke("Response code was %d".format(response.code()))
                         }
                     } else {
                         onFailure.invoke(null)
@@ -228,11 +241,57 @@ object PokerApiHandler {
             })
     }
 
+    public fun getRoomCall(
+        onSuccess :(response: PokerRoomsApiClasses.GetRoomResponse) -> Unit,
+        onFailure :(responseMessage: String?) -> Unit,
+        token :String,
+        roomName :String
+    ) {
+        Logf("[PokerApiHandler] Executing getRoomCall...")
+        this.pokerApiCallsService
+            .getRoom(
+                token = token,
+                roomName = roomName
+            )
+            .enqueue(object : Callback<PokerRoomsApiClasses.GetRoomResponse> {
+                override fun onResponse(
+                    call :Call<PokerRoomsApiClasses.GetRoomResponse>,
+                    response :Response<PokerRoomsApiClasses.GetRoomResponse>
+                ) {
+                    if (response.isSuccessful) {
+                        Logf("[PokerApiHandler] getRoomCall response successful with status code %d", response.code())
+                        if (response.code() == 200) {
+                            val body :PokerRoomsApiClasses.GetRoomResponse? = response.body()
+                            Logf("[PokerApiHandler] getRoomCall response body: %s", body)
+                            if (body == null) {
+                                Logf("[PokerApiHandler] getRoomCall response body is unexpectedly null")
+                                onFailure.invoke(null)
+                            } else {
+                                onSuccess.invoke(body)
+                            }
+                        } else {
+                            Logf("[PokerApiHandler] getRoomCall response was successful but with non-200 response code: %d", response.code())
+                            onFailure.invoke("Response code was %d".format(response.code()))
+                        }
+                    }
+                    else {
+                        onFailure.invoke(null)
+                    }
+                }
+
+                override fun onFailure(call :Call<PokerRoomsApiClasses.GetRoomResponse>, t :Throwable) {
+                    Logf("[PokerApiHandler] getRoomCall request failed: %s", t.message)
+                    onFailure.invoke(t.message)
+                }
+            })
+    }
+
     public fun getAllDecksCall(
         onSuccess :(response :List<PokerRoomsApiClasses.Deck>) -> Unit,
         onFailure :(responseMessage :String?) -> Unit,
         token :String
     ) {
+        Logf("[PokerApiHandler] Executing getAllDecksCall...")
         this.pokerApiCallsService
             .getAllDecks(
                 token = token
@@ -244,17 +303,21 @@ object PokerApiHandler {
                 ) {
                     if (response.isSuccessful) {
                         Logf("[PokerApiHandler] getAllDecksCall response successful with status code %d", response.code())
-                    }
-                    if (response.code() == 200) {
-                        val body :List<PokerRoomsApiClasses.Deck>? = response.body()
-                        Logf("[PokerApiHandler] getAllDecksCall response body: %s", body)
-                        if (body == null) {
-                            Logf("[PokerApiHandler] getAllDecksCall response body is unexpectedly null")
-                            onFailure.invoke(null)
+                        if (response.code() == 200) {
+                            val body :List<PokerRoomsApiClasses.Deck>? = response.body()
+                            Logf("[PokerApiHandler] getAllDecksCall response body: %s", body)
+                            if (body == null) {
+                                Logf("[PokerApiHandler] getAllDecksCall response body is unexpectedly null")
+                                onFailure.invoke(null)
+                            } else {
+                                onSuccess.invoke(body)
+                            }
                         } else {
-                            onSuccess.invoke(body)
+                            Logf("[PokerApiHandler] getAllDecksCall response was successful but with non-200 response code: %d", response.code())
+                            onFailure.invoke("Response code was %d".format(response.code()))
                         }
-                    } else {
+                    }
+                     else {
                         onFailure.invoke(null)
                     }
                 }
@@ -278,7 +341,7 @@ object PokerApiHandler {
             .deleteRoom(
                 token = token,
                 deleteRoomRequest = PokerRoomsApiClasses.DeleteRoomRequest(
-                    name = roomName,
+                    roomName = roomName,
                     roomId = roomId
                 )
             )
@@ -289,15 +352,18 @@ object PokerApiHandler {
                 ) {
                     if (response.isSuccessful) {
                         Logf("[PokerApiHandler] deleteRoomCall response successful with status code %d", response.code())
-                    }
-                    if (response.code() == 200) {
-                        val body :PokerRoomsApiClasses.SimpleResponse? = response.body()
-                        Logf("[PokerApiHandler] deleteRoomCall response body: %s", body)
-                        if (body == null) {
-                            Logf("[PokerApiHandler] deleteRoomCall response body is unexpectedly null")
-                            onFailure.invoke(null)
+                        if (response.code() == 200) {
+                            val body :PokerRoomsApiClasses.SimpleResponse? = response.body()
+                            Logf("[PokerApiHandler] deleteRoomCall response body: %s", body)
+                            if (body == null) {
+                                Logf("[PokerApiHandler] deleteRoomCall response body is unexpectedly null")
+                                onFailure.invoke(null)
+                            } else {
+                                onSuccess.invoke(body)
+                            }
                         } else {
-                            onSuccess.invoke(body)
+                            Logf("[PokerApiHandler] deleteRoomCall response was successful but with non-200 response code: %d", response.code())
+                            onFailure.invoke("Response code was %d".format(response.code()))
                         }
                     } else {
                         onFailure.invoke(null)
@@ -329,15 +395,18 @@ object PokerApiHandler {
                 ) {
                     if (response.isSuccessful) {
                         Logf("[PokerApiHandler] getAllRoomsCall response successful with status code %d", response.code())
-                    }
-                    if (response.code() == 200) {
-                        val body :PokerRoomsApiClasses.GetAllRoomsResponse? = response.body()
-                        Logf("[PokerApiHandler] getAllRoomsCall response body: %s", body)
-                        if (body == null) {
-                            Logf("[PokerApiHandler] getAllRoomsCall response body is unexpectedly null")
-                            onFailure.invoke(null)
+                        if (response.code() == 200) {
+                            val body :PokerRoomsApiClasses.GetAllRoomsResponse? = response.body()
+                            Logf("[PokerApiHandler] getAllRoomsCall response body: %s", body)
+                            if (body == null) {
+                                Logf("[PokerApiHandler] getAllRoomsCall response body is unexpectedly null")
+                                onFailure.invoke(null)
+                            } else {
+                                onSuccess.invoke(body)
+                            }
                         } else {
-                            onSuccess.invoke(body)
+                            Logf("[PokerApiHandler] getAllRoomsCall response was successful but with non-200 response code: %d", response.code())
+                            onFailure.invoke("Response code was %d".format(response.code()))
                         }
                     } else {
                         onFailure.invoke(null)
@@ -370,15 +439,18 @@ object PokerApiHandler {
                 ) {
                     if (response.isSuccessful) {
                         Logf("[PokerApiHandler] getResultCall response successful with status code %d", response.code())
-                    }
-                    if (response.code() == 200) {
-                        val body :PokerRoomsApiClasses.GetResultResponse? = response.body()
-                        Logf("[PokerApiHandler] getResultCall response body: %s", body)
-                        if (body == null) {
-                            Logf("[PokerApiHandler] getResultCall response body is unexpectedly null")
-                            onFailure.invoke(null)
+                        if (response.code() == 200) {
+                            val body :PokerRoomsApiClasses.GetResultResponse? = response.body()
+                            Logf("[PokerApiHandler] getResultCall response body: %s", body)
+                            if (body == null) {
+                                Logf("[PokerApiHandler] getResultCall response body is unexpectedly null")
+                                onFailure.invoke(null)
+                            } else {
+                                onSuccess.invoke(body)
+                            }
                         } else {
-                            onSuccess.invoke(body)
+                            Logf("[PokerApiHandler] getResultCall response was successful but with non-200 response code: %d", response.code())
+                            onFailure.invoke("Response code was %d".format(response.code()))
                         }
                     } else {
                         onFailure.invoke(null)
@@ -415,15 +487,18 @@ object PokerApiHandler {
                 ) {
                     if (response.isSuccessful) {
                         Logf("[PokerApiHandler] voteCall response successful with status code %d", response.code())
-                    }
-                    if (response.code() == 200) {
-                        val body :PokerRoomsApiClasses.SimpleResponse? = response.body()
-                        Logf("[PokerApiHandler] getResultCall response body: %s", body)
-                        if (body == null) {
-                            Logf("[PokerApiHandler] voteCall response body is unexpectedly null")
-                            onFailure.invoke(null)
+                        if (response.code() == 200) {
+                            val body :PokerRoomsApiClasses.SimpleResponse? = response.body()
+                            Logf("[PokerApiHandler] voteCall response body: %s", body)
+                            if (body == null) {
+                                Logf("[PokerApiHandler] voteCall response body is unexpectedly null")
+                                onFailure.invoke(null)
+                            } else {
+                                onSuccess.invoke(body)
+                            }
                         } else {
-                            onSuccess.invoke(body)
+                            Logf("[PokerApiHandler] voteCall response was successful but with non-200 response code: %d", response.code())
+                            onFailure.invoke("Response code was %d".format(response.code()))
                         }
                     } else {
                         onFailure.invoke(null)
@@ -432,6 +507,61 @@ object PokerApiHandler {
 
                 override fun onFailure(call :Call<PokerRoomsApiClasses.SimpleResponse>, t :Throwable) {
                     Logf("[PokerApiHandler] voteCall request failed: %s", t.message)
+                    onFailure.invoke(t.message)
+                }
+            })
+    }
+
+    /**
+     * Reports location to the API.
+     * @param onSuccess Action to execute when the API response is OK.
+     * @param onFailure Action to perform when the API received a failure response.
+     */
+    public fun reportLocationCall(
+        onSuccess :(response :PokerRoomsApiClasses.SimpleResponse) -> Unit,
+        onFailure :(responseMessage :String?) -> Unit,
+        token       :String,
+        lat         :String,
+        long        :String,
+        roomName    :String
+    ) {
+        Logf("[PokerApiHandler] Executing reportLocationCall...")
+        this.pokerApiCallsService
+            .reportLocation(
+                token = token,
+                reportLocationRequest = PokerRoomsApiClasses.ReportLocationRequest(
+                    lat = lat,
+                    long = long,
+                    roomName = roomName
+                )
+            )
+            .enqueue(object : Callback<PokerRoomsApiClasses.SimpleResponse> {
+                override fun onResponse(
+                    call     :Call<PokerRoomsApiClasses.SimpleResponse>,
+                    response :Response<PokerRoomsApiClasses.SimpleResponse>
+                ) {
+                    if (response.isSuccessful) {
+                        Log.d("Location", "[PlanningActivity] reportLocationCall response successful with status code %d".format(response.code()))
+                        if (response.code() == 200) {
+                            val body :PokerRoomsApiClasses.SimpleResponse? = response.body()
+                            Log.d("Location", "[PokerApiHandler] getResultCall response body: %s".format(body))
+                            if (body == null) {
+                                Log.d("Location", "[PokerApiHandler] reportLocationCall response body is unexpectedly null")
+                                onFailure.invoke(null)
+                            } else {
+                                onSuccess.invoke(body)
+                            }
+                        } else {
+                            Log.d("Location", "[PokerApiHandler] reportLocationCall response was successful but with non-200 response code: %d".format(response.code()))
+                            onFailure.invoke("Response code was %d".format(response.code()))
+                        }
+                    } else {
+                        onFailure.invoke(null)
+                    }
+                }
+
+                override fun onFailure(call :Call<PokerRoomsApiClasses.SimpleResponse>, t :Throwable) {
+                    Log.d("Location", "[PokerApiHandler] reportLocationCall request failed: %s".format(t.message))
                     onFailure.invoke(t.message)
                 }
             })

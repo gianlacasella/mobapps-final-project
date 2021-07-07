@@ -10,7 +10,6 @@ import com.ifgarces.courseproject.PlanningActivity
 import com.ifgarces.courseproject.R
 import com.ifgarces.courseproject.models.Card
 import com.ifgarces.courseproject.utils.IntentKeys
-import com.ifgarces.courseproject.utils.toastf
 
 
 /**
@@ -47,7 +46,6 @@ class CardsAdapter(private var data :MutableList<Card>) :
                 helper.intent.putExtra(IntentKeys.CARD_LABEL, item.label)
                 helper.intent.putExtra(IntentKeys.CARD_VALUE, item.value)
                 (this.parentView.context as PlanningActivity).navigator.navigateToSingleCardFragment()
-                this.parentView.context.toastf("Item with value %s", item.value)
             }
         }
     }

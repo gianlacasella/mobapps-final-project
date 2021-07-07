@@ -12,6 +12,8 @@ import androidx.room.PrimaryKey
  * perform the request and we temportarily stored the `PokerRoom` in the database. Remember to fill
  * it when that API call can be made. Note that this is `var` and not `val`, as it is intended to be
  * updated when null.
+ * @property isOnline Tells whether the online metadata of the PokerRooms is set, i.e. is "online"
+ * at the API level.
  */
 @Entity(tableName=PokerRoom.TABLE_NAME)
 data class PokerRoom(
@@ -20,6 +22,8 @@ data class PokerRoom(
     val password :String,
     var onlineId :String?
 ) {
+    public fun isOnline() = (onlineId != null)
+
     companion object {
         const val TABLE_NAME :String = "PokerRoom"
     }

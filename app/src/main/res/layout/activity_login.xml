@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
-    android:background="@color/white">
+    android:background="@color/almostWhite">
 
         <!-- Linear layout base -->
         <LinearLayout
@@ -209,6 +209,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="false"
+                    android:visibility="gone"
                     android:text="Dummy authentication"
                     android:textColor="@color/purple_700"
                     android:textSize="17sp"

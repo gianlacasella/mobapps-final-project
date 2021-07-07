@@ -29,14 +29,14 @@ class RoomsHomeFragment : Fragment() {
         val fragView :View? = inflater.inflate(R.layout.fragment_rooms_home, container, false)
         this.UI = FragmentUI(owner=fragView!!)
 
-        with (this.requireActivity() as PlanningActivity) {
+        (this.requireActivity() as PlanningActivity).let { planningActivity :PlanningActivity ->
             UI.onlineRoomsRecycler.layoutManager = LinearLayoutManager(this@RoomsHomeFragment.requireContext())
-            UI.onlineRoomsRecycler.adapter = this.roomsRecyclerAdapter
+            UI.onlineRoomsRecycler.adapter = planningActivity.roomsRecyclerAdapter
             UI.createButton.setOnClickListener {
-                this.navigator.nativateToRoomCreateFragment()
+                planningActivity.navigator.nativateToRoomCreateFragment()
             }
             UI.joinButton.setOnClickListener {
-                this.navigator.navigateToJoinRoomFragment()
+                planningActivity.navigator.navigateToJoinRoomFragment()
             }
         }
 

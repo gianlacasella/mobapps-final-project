@@ -37,47 +37,47 @@ class RoomCreateFragment : Fragment() {
         val fragView: View? = inflater.inflate(R.layout.fragment_room_create, container, false)
         this.UI = FragmentUI(owner = fragView!!)
 
-        val deckNames :List<String> = (this.requireActivity() as PlanningActivity).deckCardsViewModel.allDecks.map { it.name }
-        UI.deckTypeSpinner.adapter = ArrayAdapter(
-            this.requireContext(), R.layout.spinner_item, deckNames
-        )
-
-        UI.deckTypeSpinner.setSelection(
-            deckNames.indexOf(
-                (this.requireActivity() as PlanningActivity).deckCardsViewModel.currentDeck.name
+        (this.requireActivity() as PlanningActivity).let { planningActivity :PlanningActivity ->
+            val deckNames :List<String> = planningActivity.deckCardsViewModel.allDecks.map { it.name }
+            UI.deckTypeSpinner.adapter = ArrayAdapter(
+                this.requireContext(), R.layout.spinner_item, deckNames
             )
-        )
 
-        UI.confirmButton.setOnClickListener {
-            if (UI.roomName.text.isBlank() || UI.roomPassword.text.isBlank()) {
-                this.requireContext().toastf("Please fill all the fields")
-                return@setOnClickListener
-            }
+            UI.deckTypeSpinner.setSelection(
+                deckNames.indexOf(
+                    planningActivity.deckCardsViewModel.currentDeck.name
+                )
+            )
 
-            val roomName :String = UI.roomName.text.toString()
-            val roomPassword :String = UI.roomPassword.text.toString()
-            Logf("[RoomCreateFragment] Adding room with name %s and password %s to RoomsHomeFragment's recycler...", roomName, roomPassword)
-            val selectedDeck :PokerRoomsApiClasses.Deck = getApiDeck(UI.deckTypeSpinner.selectedItem.toString())!!
+            UI.confirmButton.setOnClickListener {
+                if (UI.roomName.text.isBlank() || UI.roomPassword.text.isBlank()) {
+                    this.requireContext().toastf("Please fill all the fields")
+                    return@setOnClickListener
+                }
 
-            Executors.newSingleThreadExecutor().execute {
-                (this.requireActivity() as PlanningActivity).let { activity :PlanningActivity ->
+                val roomName :String = UI.roomName.text.toString()
+                val roomPassword :String = UI.roomPassword.text.toString()
+                Logf("[RoomCreateFragment] Adding room with name %s and password %s to RoomsHomeFragment's recycler...", roomName, roomPassword)
+                val selectedDeck :PokerRoomsApiClasses.Deck = getApiDeck(UI.deckTypeSpinner.selectedItem.toString())!!
+
+                Executors.newSingleThreadExecutor().execute {
                     // Calling the API to create the room remotely
                     PokerApiHandler.createRoomCall(
                         onSuccess = {
-                            activity.toastf("PokerRoom \"%s\" created online", roomName)
-                            activity.pokerRoomsViewModel.appendPokerRoom(name=roomName, password=roomPassword, onlineId=it.roomId)
+                            planningActivity.toastf("PokerRoom \"%s\" created online!", roomName)
+                            planningActivity.pokerRoomsViewModel.appendPokerRoom(name=roomName, password=roomPassword, onlineId=it.roomId)
                         },
                         onFailure = { serverMessage :String? ->
-                            activity.infoDialog(
+                            planningActivity.infoDialog(
                                 title = "Couldn't create online poker room",
                                 message = (serverMessage ?: "Please check your internet connection") +
                                         "\nYour room will be created locally and will be published online when internet is available again",
                                 onDismiss = {
-                                    activity.onCreateRoomApiFail(roomName, roomPassword, selectedDeck)
+                                    planningActivity.onCreateRoomApiFail(roomName, roomPassword, selectedDeck)
                                 },
                                 icon = R.drawable.warning_icon
                             )
-                            activity.pokerRoomsViewModel.appendPokerRoom(name=roomName, password=roomPassword, onlineId=null)
+                            planningActivity.pokerRoomsViewModel.appendPokerRoom(name=roomName, password=roomPassword, onlineId=null)
                         },
                         roomName = roomName,
                         roomPassword = roomPassword,
@@ -85,9 +85,10 @@ class RoomCreateFragment : Fragment() {
                         token = ApiUser.getToken()!!
                     )
 
-                    activity.deckCardsViewModel.currentDeck = activity.getRoomDB().decksDAO().getAll().find { it.name == selectedDeck.name }!!
+                    planningActivity.deckCardsViewModel.currentDeck = planningActivity.getRoomDB().decksDAO().getAll().find { it.name == selectedDeck.name }!!
+                    //this.requireActivity().onBackPressed()
+                    planningActivity.navigator.navigateUp()
                 }
-                this.requireActivity().onBackPressed()
             }
         }
         return fragView
@@ -98,10 +99,10 @@ class RoomCreateFragment : Fragment() {
      * matches the given `deckName`.
      */
     private fun getApiDeck(deckName :String) :PokerRoomsApiClasses.Deck? {
-        (this.requireActivity() as PlanningActivity).let { activity :PlanningActivity ->
-            activity.deckCardsViewModel.allDecks.forEach { deck :Deck ->
+        (this.requireActivity() as PlanningActivity).let { planningActivity :PlanningActivity ->
+            planningActivity.deckCardsViewModel.allDecks.forEach { deck :Deck ->
                 if (deck.name == deckName) {
-                    val modelCards :List<Card> = activity.deckCardsViewModel.getCardsOfDeck(deckId = deck.id)
+                    val modelCards :List<Card> = planningActivity.deckCardsViewModel.getCardsOfDeck(deckId = deck.id)
                     val apiCards :List<String> = modelCards.map { it.label }
 
                     return PokerRoomsApiClasses.Deck(

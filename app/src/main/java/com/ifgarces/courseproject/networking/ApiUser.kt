@@ -1,5 +1,8 @@
 package com.ifgarces.courseproject.networking
 
+import com.ifgarces.courseproject.networking.ApiUser.id
+import com.ifgarces.courseproject.networking.ApiUser.isAuthenticated
+import com.ifgarces.courseproject.networking.ApiUser.token
 import com.ifgarces.courseproject.utils.Logf
 
 

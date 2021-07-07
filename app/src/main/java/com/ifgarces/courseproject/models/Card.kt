@@ -27,7 +27,7 @@ data class Card(
     @PrimaryKey(autoGenerate=false)
     val id :Int,
     val label :String,
-    val value :Double,
+    var value :Double, //TODO: change to Int
 
     @ColumnInfo(index = true)
     val deck_id :Int

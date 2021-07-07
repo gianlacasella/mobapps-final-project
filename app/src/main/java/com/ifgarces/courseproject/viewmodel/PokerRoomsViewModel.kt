@@ -4,16 +4,27 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.ifgarces.courseproject.PlanningActivity
 import com.ifgarces.courseproject.models.PokerRoom
+import com.ifgarces.courseproject.networking.ApiUser
+import com.ifgarces.courseproject.networking.PokerApiHandler
+import com.ifgarces.courseproject.networking.PokerRoomsApiClasses
 import com.ifgarces.courseproject.utils.Logf
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
 
-class PokerRoomsViewModel(private val planningActivity :PlanningActivity) : ViewModel() {
+/**
+ * @property pokerRoomsNameToUsersMap Maps PokerRoom names (considered unique) and its corresponding
+ * user list, queried asynchronously with `PokerApiHandler.getRoomCall`.
+ */
+class PokerRoomsViewModel(val planningActivity :PlanningActivity) : ViewModel() {
 
-    public  val pokerRoomsList   :MutableList<PokerRoom> = mutableListOf()
-    public  val pokerRoomsListLD :MutableLiveData<MutableList<PokerRoom>> = MutableLiveData<MutableList<PokerRoom>>()
-    private val asyncExecutor    :Executor = Executors.newSingleThreadExecutor()
+    public  val pokerRoomsList           :MutableList<PokerRoom> = mutableListOf()
+    public  val pokerRoomsListLD         :MutableLiveData<MutableList<PokerRoom>> = MutableLiveData<MutableList<PokerRoom>>()
+    private val pokerRoomsNameToUsersMap :MutableMap<String, List<PokerRoomsApiClasses.RoomMember>?> = mutableMapOf()
+
+    public fun getUsersOfPokerRoom(roomName :String) = this.pokerRoomsNameToUsersMap[roomName]
+
+    private val asyncExecutor :Executor = Executors.newSingleThreadExecutor()
 
     /**
      * Loads the PokerRooms from the local database. It would be impossible to use
@@ -28,9 +39,9 @@ class PokerRoomsViewModel(private val planningActivity :PlanningActivity) : View
 //                    // API call succeeded, loading got PokerRooms in the recycler
 //                    var pokerRoomBuff :PokerRoom
 //                    it.rooms.forEachIndexed { index :Int, item :PokerRoomsApiClasses.GetAllRoomsResponseItem ->
-//                        pokerRoomBuff = PokerRoom(name = item.roomName, password = null, onlineId = item.roomId)
+//                        pokerRoomBuff = PokerRoom(name = item.roomName, password = null, onlineId = item.roomId) //! Cannot get password unless it is locally available, therefore the getAllRoomsCall is pointless.
 //                    }
-//                    throw NotImplementedError()
+//                    throw NotImplementedError() //!
 //                    onFinish.invoke()
 //                },
 //                onFailure = { serverMessage :String? ->
@@ -48,10 +59,37 @@ class PokerRoomsViewModel(private val planningActivity :PlanningActivity) : View
             this.planningActivity.getRoomDB().pokerRoomsDAO().getAll().forEach {
                 this.pokerRoomsList.add(it)
             }
+
+            this.mapRoomsWithUserList()
+
             onFinish.invoke()
         }
     }
 
+    /**
+     * Fills `pokerRoomsNameToUsersMap`, using getRoom API call for mapping every PokerRoom with the
+     * list of its online users.
+     */
+    private fun mapRoomsWithUserList() {
+        Logf("[PokerRoomsViewModel] Fetching user list for each PokerRoom (count=%d)", this.pokerRoomsList.count())
+        this.pokerRoomsList.forEach { pokerRoom :PokerRoom ->
+            PokerApiHandler.getRoomCall(
+                onSuccess = { response :PokerRoomsApiClasses.GetRoomResponse ->
+                    this.pokerRoomsNameToUsersMap[pokerRoom.name] = response.members
+                },
+                onFailure = { serverMessage :String? ->
+                    Logf("[PokerRoomsViewModel] Couldn't perform getRoomCall for PokerRoom \"%s\"", pokerRoom.name)
+                    this.pokerRoomsNameToUsersMap[pokerRoom.name] = null
+                },
+                token = ApiUser.getToken()!!,
+                roomName = pokerRoom.name
+            )
+        }
+    }
+
+    /**
+     * Adds a new PokerRoom (local model).
+     */
     public fun appendPokerRoom(name :String, password :String, onlineId :String?) {
         val newPokerRoom :PokerRoom = PokerRoom(name, password, onlineId)
         this.pokerRoomsList.add(newPokerRoom)
@@ -60,6 +98,20 @@ class PokerRoomsViewModel(private val planningActivity :PlanningActivity) : View
         this.asyncExecutor.execute {
             this.planningActivity.getRoomDB().pokerRoomsDAO().insert(room=newPokerRoom)
         }
+
+        // Appending mapping to `pokerRoomsNameToUsersMap`
+        Logf("[PokerRoomsViewModel] Fetching user list of appended PokerRoom \"%s\"", name)
+        PokerApiHandler.getRoomCall(
+            onSuccess = { response :PokerRoomsApiClasses.GetRoomResponse ->
+                this.pokerRoomsNameToUsersMap[name] = response.members
+            },
+            onFailure = { serverMessage :String? ->
+                Logf("[PokerRoomsViewModel] Couldn't perform getRoomCall for PokerRoom \"%s\"", name)
+                this.pokerRoomsNameToUsersMap[name] = null
+            },
+            token = ApiUser.getToken()!!,
+            roomName = name
+        )
     }
 
     /**
@@ -76,6 +128,7 @@ class PokerRoomsViewModel(private val planningActivity :PlanningActivity) : View
         this.asyncExecutor.execute {
             this.planningActivity.getRoomDB().pokerRoomsDAO().delete(name)
         }
+        this.pokerRoomsNameToUsersMap.remove(name)
     }
 
     /**

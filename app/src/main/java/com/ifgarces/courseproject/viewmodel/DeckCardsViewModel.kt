@@ -9,6 +9,7 @@ import com.ifgarces.courseproject.networking.ApiUser
 import com.ifgarces.courseproject.networking.PokerApiHandler
 import com.ifgarces.courseproject.networking.PokerRoomsApiClasses
 import com.ifgarces.courseproject.utils.Logf
+import com.ifgarces.courseproject.utils.toastf
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
@@ -137,6 +138,7 @@ class DeckCardsViewModel : ViewModel() {
                     val decksCards = apiDecksToModelDecks(presetDecks)
                     onApiCallFinished.invoke(decksCards.first, decksCards.second)
                 }
+                planningActivity.toastf("Couldn't fetch Deck list, using local instead")
             },
             token = ApiUser.getToken()!!
         )
@@ -145,7 +147,9 @@ class DeckCardsViewModel : ViewModel() {
     /**
      * Gets the collection of cards for the `Deck` whose `id` matches the given `deckId`
      */
-    public fun getCardsOfDeck(deckId :Int) :List<Card> {
-        return this.allCards.filter { it.deck_id == deckId }
-    }
+    public fun getCardsOfDeck(deckId :Int) :List<Card> = this.allCards.filter { it.deck_id == deckId }
+
+    public fun getCardByLabel(label :String) :Card? = this.allCards.find { it.label == label }
+
+    public fun getDeckByName(name :String) :Deck? = this.allDecks.find { it.name == name }
 }

@@ -9,7 +9,6 @@ import android.widget.EditText
 import androidx.fragment.app.Fragment
 import com.ifgarces.courseproject.PlanningActivity
 import com.ifgarces.courseproject.R
-import com.ifgarces.courseproject.models.PokerRoom
 import com.ifgarces.courseproject.networking.ApiUser
 import com.ifgarces.courseproject.networking.PokerApiHandler
 import com.ifgarces.courseproject.utils.Logf
@@ -24,12 +23,6 @@ class JoinRoomFragment : Fragment() {
         val roomPasswordTextBox :EditText = owner.findViewById(R.id.roomsJoin_password)
         val confirmButton       :Button = owner.findViewById(R.id.roomsJoin_commitButton)
     }; private lateinit var UI: FragmentUI
-
-    public object CurrentJoinedPokerRoom {
-        // Ugly solution for getting current joined room members without affecting `PokerRoom` model
-        var pokerRoomName :String? = null
-        var onlineUsers :List<String>? = null
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -47,8 +40,8 @@ class JoinRoomFragment : Fragment() {
             val roomPassword :String = UI.roomPasswordTextBox.text.toString()
 
             // Executing API call
-            (this.requireActivity() as PlanningActivity).let { activity :PlanningActivity ->
-                val roomOnlineID :String? = activity.pokerRoomsViewModel.getOnlineIdByRoomName(roomName)
+            (this.requireActivity() as PlanningActivity).let { planningActivity :PlanningActivity ->
+                val roomOnlineID :String? = planningActivity.pokerRoomsViewModel.getOnlineIdByRoomName(roomName)
                 Logf("[JoinRoomFragment] Joining room with name %s, password %s and onlineID %s...", roomName, roomPassword, roomOnlineID)
                 PokerApiHandler.joinRoomCall(
                     onSuccess = {
@@ -57,15 +50,22 @@ class JoinRoomFragment : Fragment() {
                                 "[JoinRoomFragment] User joined to room with %d participants! API response message: %s",
                                 it.members.count(), it.message
                             )
-                            activity.toastf("Successfuly joined to online poker room")
-                            activity.pokerRoomsViewModel.appendPokerRoom(roomName, roomPassword, roomOnlineID)
-                            CurrentJoinedPokerRoom.onlineUsers = it.members
-                            CurrentJoinedPokerRoom.pokerRoomName = roomName
-                            activity.navigator.navigateUp() //this.onBackPressed()
+                            planningActivity.toastf("Successfuly joined to online poker room")
+                            planningActivity.pokerRoomsViewModel.appendPokerRoom(roomName, roomPassword, roomOnlineID)
+
+                            // Setting as current selected joined PokerRoom
+                            planningActivity.selectedJoinedPokerRoom = PlanningActivity.SelectedJoinedPokerRoom(
+                                pokerRoomName = roomName,
+                                onlineUsers = it.members
+                            )
+                            // Starting geolocator
+                            //planningActivity.InitializeGeoLocator()
+                            // Going back
+                            planningActivity.navigator.navigateUp() //this.onBackPressed()
                         }
                         catch (e :NullPointerException) {
                             Logf("[JoinRoomFragment] Join request was OK, but response shape was unexpected") // <- this should not happen if the API was done right, as it is an error response case. Happens when we try to join a room from another user (unexpected token, apparently)
-                            activity.infoDialog(
+                            planningActivity.infoDialog(
                                 title = "Couldn't join to Poker Room",
                                 message = it.message,
                                 icon = R.drawable.warning_icon
@@ -73,7 +73,7 @@ class JoinRoomFragment : Fragment() {
                         }
                     },
                     onFailure = { serverMessage :String? ->
-                        activity.infoDialog(
+                        planningActivity.infoDialog(
                             title = "Couldn't join to online poker room",
                             message = serverMessage ?: "Please check your internet connection",
                             icon = R.drawable.warning_icon
